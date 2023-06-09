@@ -1,4 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:myapp/src/home/page/home.dart';
+import 'package:myapp/src/login/call_api.dart';
+import 'package:myapp/src/profile/getx/controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,6 +15,113 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  ProfileController profileController = Get.put(ProfileController());
+
+  Login() async {
+      SharedPreferences sharedPreferences =  await SharedPreferences.getInstance();
+    var data = {
+      "email": email.text.toString(),
+      "password": password.text.toString(),
+    };
+    var res = await CallApi().postDatalogin(data);
+    var body = json.decode(res.body);
+    if (res.statusCode == 200) {
+      sharedPreferences.setString('token', body['token']['access'].toString());
+      sharedPreferences.setString('id', body['user_id'].toString());
+      
+      //print(body['user_id'].toString());
+      Navigator.pop(context);
+      profileController.onInit();
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeMain()));
+    } else {
+      Navigator.pop(context);
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+                elevation: 0,
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                content: Container(
+                  alignment: Alignment.center,
+                  width: 350,
+                  height: 200,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Sorry!',
+                          style: TextStyle(
+                              color: Color(0xFF5D5D5D),
+                              fontSize: 18,
+                              fontFamily: 'noto_bold')),
+                      const Text( 'Invalid email or password',
+                          style: TextStyle(
+                              color: Color(0xFF5D5D5D),
+                              fontSize: 15,
+                              fontFamily: 'noto_regular')),
+                      SizedBox(height: 25),
+                      Container(
+                        width: 150,
+                        height: 45,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: ElevatedButton(
+                            child: const Text( 'Ok',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontFamily: 'noto_regular')),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ));
+    }
+
+    print(res.statusCode.toString());
+  }
+
+
+  dialog() {
+    showDialog(
+        //barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              content: Container(
+                alignment: Alignment.center,
+                width: 201,
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Center(child: CircularProgressIndicator()),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Center(
+                          child: Text('Please wait',
+                        style: TextStyle(fontFamily: 'noto_regular',fontSize: 15,color: Color(0xFF4D4D4F)),
+                      )),
+                    ),
+                  ],
+                ),
+              ),
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,12 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     backgroundColor:
                                         Theme.of(context).primaryColor,
                                     radius: 40,
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.person,
                                       size: 50,
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     'Login',
                                     style: TextStyle(
                                       fontSize: 30,
@@ -71,6 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Column(
                                 children: <Widget>[
                                   TextField(
+                                    controller: email,
                                     autocorrect: true,
                                     decoration: InputDecoration(
                                       hintText: 'Enter your email',
@@ -96,6 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TextField(
                                     autocorrect: true,
                                     obscureText: true,
+                                    controller: password,
                                     decoration: InputDecoration(
                                       hintText: 'Enter your password',
                                       hintStyle: TextStyle(
@@ -122,7 +238,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Container(
                                     child: Center(
                                       child: FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          dialog();
+                                          Login();
+                                        },
                                         padding: EdgeInsets.all(16),
                                         color: Color.fromARGB(255, 15, 94, 159),
                                         shape: RoundedRectangleBorder(
