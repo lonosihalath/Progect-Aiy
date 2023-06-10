@@ -1,12 +1,13 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:myapp/constants.dart';
 import 'package:myapp/src/cart/getx/controller.dart';
+import 'package:myapp/src/cart/getx/model.dart';
 import 'package:myapp/src/cart/page/cart_screen.dart';
 import 'package:myapp/src/materail_product/getx/model.dart';
+import 'package:myapp/src/order/page/chekout.dart';
 
 class DetailScreen extends StatefulWidget {
   final Product product;
@@ -28,6 +29,27 @@ class _DetailScreenState extends State<DetailScreen>{
   int qtyAddtocard = 1;
   int qtyBorrow = 1;
   CartController cartController = Get.put(CartController());
+
+  Map<int, BuynowItem> productbuynow = {};
+
+  void addItembuy(int productId, id, int material, int lab, int quantity, String image, stock, name) {
+    clear();
+    productbuynow.putIfAbsent(
+      productId,
+      () => BuynowItem(
+          image: image,
+          id: id.toString(),
+          material: material,
+          lab: lab,
+          quantity: quantity,
+           name: name,
+           stock: stock),
+    );
+  }
+
+  void clear() {
+    productbuynow = {};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -371,6 +393,50 @@ class _DetailScreenState extends State<DetailScreen>{
                                         qtyAddtocard =1;
                                         Navigator.pop(context);
                                       });
+                                      showDialog(
+                                                                    barrierDismissible:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      Future.delayed(
+                                                                          Duration(
+                                                                              seconds: 1),
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop(true);
+                                                                      });
+                                                                      return AlertDialog(
+                                                                        backgroundColor:
+                                                                            Colors.white,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(20)),
+                                                                        content:
+                                                                            Container(
+                                                                          alignment:
+                                                                              Alignment.center,
+                                                                          width:
+                                                                              201,
+                                                                          height:
+                                                                              90,
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Image.asset('icons/check.png', width: 40),
+                                                                              SizedBox(height: 10),
+                                                                              const Text('Add to cart successfully',
+                                                                                style: TextStyle(fontSize: 15, fontFamily: 'noto_regular', color: Color(0xFF4D4D4F)),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    });
                                     },
                                     child: Container(
                                         color: Color.fromARGB(
@@ -520,7 +586,19 @@ class _DetailScreenState extends State<DetailScreen>{
                                   ),
                                   const SizedBox(height: 15),
                                   InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      addItembuy(
+                                        int.parse(widget.product.id.toString()),
+                                        int.parse(widget.product.id.toString()),
+                                        int.parse(widget.product.id.toString()),
+                                        int.parse(widget.product.rabId!.id.toString()),
+                                        qtyBorrow,
+                                        widget.product.image.toString(),
+                                        widget.product.qtyOnhand.toString(),
+                                        widget.product.name.toString());
+                                       //  cartController.addItemLab(int.parse(widget.product.rabId!.id.toString()),int.parse(widget.product.rabId!.id.toString()),int.parse(widget.product.rabId!.id.toString()));
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> CheckOutScreen(productbuynowl: productbuynow.values.toList())));
+                                    },
                                     child: Container(
                                         color: Colors.orange,
                                         width:500,

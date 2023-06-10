@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myapp/src/home/page/home_page.dart';
 import 'package:myapp/src/lap_room/getx/controller.dart';
+import 'package:myapp/src/lap_room/page/lab_detail.dart';
 
 LabController labController = Get.put(LabController());
 
@@ -27,7 +29,9 @@ class LabRoomScreen extends StatelessWidget {
                 children: List.generate(
                     labController.statetList.length,
                     (index) => InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> LabDetails(lab: labController.statetList[index],product: productController.statetList.where((p0) => p0.rabId!.id==labController.statetList[index].id).toList(),)));
+                          },
                           child: Container(
                             padding: EdgeInsets.only(bottom: 10),
                             width: MediaQuery.of(context).size.width,

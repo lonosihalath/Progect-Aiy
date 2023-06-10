@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/constants.dart';
 import 'package:myapp/controller/page_controller.dart';
+import 'package:myapp/search/search.dart';
 import 'package:myapp/src/cart/getx/controller.dart';
 import 'package:myapp/src/cart/page/cart_screen.dart';
 import 'package:myapp/src/lap_room/getx/controller.dart';
+import 'package:myapp/src/lap_room/page/lab_detail.dart';
 import 'package:myapp/src/materail_product/detail/product_detail.dart';
 import 'package:myapp/src/materail_product/getx/controller.dart';
 
@@ -34,24 +36,29 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-                padding: const EdgeInsets.only(left: 10),
-                decoration: BoxDecoration(color: Colors.grey.shade200),
-                margin: const EdgeInsets.only(right: 15),
-                height: 35,
-                width: 280,
-                child: Row(
-                  children: const [
-                    Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    Text(
-                      'Search......',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
-                  ],
-                )),
+            GestureDetector(
+              onTap: (){
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> SearchScreen()));
+              },
+              child: Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(color: Colors.grey.shade200),
+                  margin: const EdgeInsets.only(right: 15),
+                  height: 35,
+                  width: 280,
+                  child: Row(
+                    children: const [
+                      Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      Text(
+                        'Search......',
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                      ),
+                    ],
+                  )),
+            ),
                 
           Stack(
             children: [
@@ -139,7 +146,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           MainAxisAlignment.center,
                                       children: [
                                         InkWell(
-                                          onTap: () {},
+                                          onTap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context)=> LabDetails(lab: labController.statetList[index],product: productController.statetList.where((p0) => p0.rabId!.id==labController.statetList[index].id).toList())));
+                                          },
                                           child: Container(
                                             alignment: Alignment.center,
                                             width: 45,

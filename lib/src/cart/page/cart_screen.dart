@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myapp/constants.dart';
 import 'package:myapp/src/cart/getx/controller.dart';
 import 'package:myapp/src/cart/getx/model.dart';
 import 'package:myapp/src/lap_room/getx/controller.dart';
 import 'package:myapp/src/lap_room/getx/model.dart';
 import 'package:myapp/src/materail_product/getx/controller.dart';
-import 'package:myapp/src/materail_product/getx/model.dart';
+import 'package:myapp/src/order/page/chekout.dart';
 
 CartController cartController = Get.put(CartController());
 ProductController productController = Get.put(ProductController());
@@ -30,17 +31,14 @@ class CartScreen extends StatelessWidget {
             style: TextStyle(fontSize: 18, color: Colors.grey.shade900)),
         centerTitle: true,
       ),
-      bottomNavigationBar: Container(
+      bottomNavigationBar: GetBuilder<CartController>(
+        init: CartController(),
+        builder: (context1)=>cartController.items.length.toInt()==0? SizedBox(): Container(
         height: 50,
         child: Row(
           children: [
-            InkWell(
-              onTap: () {
-             
-              },
-              child: Ink(
-                color: Colors.white,
-                child: Container(
+            Container(
+              color: Colors.white,
                   width: MediaQuery.of(context).size.width * 0.68,
                      padding: EdgeInsets.only(right: 15),
                   height: 50,
@@ -50,23 +48,20 @@ class CartScreen extends StatelessWidget {
                       
                       SizedBox(width: 10),
                       Text('Total: ${cartController.items.length}',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: 'noto_me',
                               fontSize: 12,
                               color: Colors.red))
                     ],
                   ),
                 ),
-              ),
-            ),
             InkWell(
               onTap: () {
-    
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const CheckOutScreen(productbuynowl: [],)));
               },
               child: Ink(
                 color: Colors.orange,
                 child: Container(
-               
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width * 0.32,
                     height: 50,
@@ -79,15 +74,15 @@ class CartScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ),),
       body: SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
+        child:  Column(
           children: [
             GetBuilder<CartController>(
               init: CartController(),
-              builder: (value)=> Container(
+              builder: (value)=>cartController.items.length.toInt()==0?SizedBox(): Container(
               alignment: Alignment.center,
               width: MediaQuery.of(context).size.width,
               height: 30,
@@ -97,8 +92,20 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 5),
             GetBuilder<CartController>(
               init: CartController(),
-              builder: (value)=> Column(
-                children: List.generate(cartController.itemslab.length, (index) => Stack(
+              builder: (value)=>cartController.items.length.toInt()==0? Padding(
+           padding: const EdgeInsets.only(top: 150),
+           child: Center(
+            child: Column(
+              children: [
+                Image.asset('icons/nodata.png',width: 90,color: Colors.grey,),
+                Text('No data',
+                                          overflow: TextOverflow.ellipsis,
+                                            style: name),
+              ],
+            ),
+           ),
+         ): Column(
+                children: List.generate(cartController.itemslab.length, (index) =>  Stack(
                   children: [Container(
               padding: const EdgeInsets.all(15),
               width: MediaQuery.of(context).size.width,
