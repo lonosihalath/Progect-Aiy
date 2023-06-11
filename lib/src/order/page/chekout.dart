@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myapp/src/bill/getx/controller.dart';
 import 'package:myapp/src/cart/getx/controller.dart';
 import 'package:myapp/src/cart/getx/model.dart';
 import 'package:myapp/src/home/page/home.dart';
 import 'package:myapp/src/lap_room/getx/controller.dart';
 import 'package:myapp/src/lap_room/getx/model.dart';
+import 'package:myapp/src/materail_product/getx/controller.dart';
 import 'package:myapp/src/order/getx/order_call_api.dart';
+import 'package:myapp/src/transactions/getx/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -24,6 +27,10 @@ class CheckOutScreen extends StatefulWidget {
 class _CheckOutScreenState extends State<CheckOutScreen> {
 CartController cartController = Get.put(CartController());
 LabController labController = Get.put(LabController());
+BillController billController = Get.put(BillController());
+TransactionsController transactionsController = Get.put(TransactionsController());
+ProductController productController = Get.put(ProductController());
+
 
   insertOrderBuynow() async {
     var date = DateTime.now();
@@ -52,6 +59,11 @@ LabController labController = Get.put(LabController());
     };
     var res = await OrderCallApi().postDataOrder(data, token);
     if(res.statusCode == 201){
+      cartController.clear();
+      productController.onInit();
+      labController.onInit();
+       billController.onInit();
+        transactionsController.onInit();
       showLog(context);
     }
     print('statusCode====>' + res.statusCode.toString());
@@ -89,6 +101,11 @@ LabController labController = Get.put(LabController());
         loop++;
       });
       if(cartController.itemslab.length.toInt()==loop){
+        cartController.clear();
+        productController.onInit();
+        labController.onInit();
+        billController.onInit();
+        transactionsController.onInit();
         showLog(context);
       }
     }
@@ -436,8 +453,6 @@ LabController labController = Get.put(LabController());
               ),
             );
           });
-      cartController.clear();
-      cartController.clearlab();
     });
   }
 

@@ -128,6 +128,7 @@ class CartController extends GetxController {
 
   void clear() {
     _items = {};
+    _itemslab = {};
     update();
   }
   /////////////////////////////////////////
@@ -136,8 +137,4 @@ class CartController extends GetxController {
     update();
   }
 
-  void clearlab() {
-    _itemslab = {};
-    update();
-  }
 }

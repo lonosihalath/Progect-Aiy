@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myapp/src/home/page/home_page.dart';
 import 'package:myapp/src/lap_room/getx/controller.dart';
 import 'package:myapp/src/lap_room/page/lab_detail.dart';
+import 'package:myapp/src/materail_product/getx/controller.dart';
 
 LabController labController = Get.put(LabController());
 
-class LabRoomScreen extends StatelessWidget {
+class LabRoomScreen extends StatefulWidget {
   const LabRoomScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LabRoomScreen> createState() => _LabRoomScreenState();
+}
+
+class _LabRoomScreenState extends State<LabRoomScreen> {
+
+ProductController productController = Get.put(ProductController());
+LabController labController = Get.put(LabController());
 
   @override
   Widget build(BuildContext context) {

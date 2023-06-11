@@ -8,15 +8,23 @@ import 'package:myapp/src/lap_room/getx/model.dart';
 import 'package:myapp/src/materail_product/getx/controller.dart';
 import 'package:myapp/src/order/page/chekout.dart';
 
-CartController cartController = Get.put(CartController());
-ProductController productController = Get.put(ProductController());
-LabController labController = Get.put(LabController());
 
-class CartScreen extends StatelessWidget {
+
+class CartScreen extends StatefulWidget {
    CartScreen({Key? key}) : super(key: key);
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+
+  CartController cartController = Get.put(CartController());
+ProductController productController = Get.put(ProductController());
+LabController labController = Get.put(LabController());
+  @override
   Widget build(BuildContext context) {
+    double screen = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
@@ -33,13 +41,13 @@ class CartScreen extends StatelessWidget {
       ),
       bottomNavigationBar: GetBuilder<CartController>(
         init: CartController(),
-        builder: (context1)=>cartController.items.length.toInt()==0? SizedBox(): Container(
+        builder: (context)=>cartController.itemCount.toString() == '0'? SizedBox(): Container(
         height: 50,
         child: Row(
           children: [
             Container(
               color: Colors.white,
-                  width: MediaQuery.of(context).size.width * 0.68,
+                  width: screen * 0.68,
                      padding: EdgeInsets.only(right: 15),
                   height: 50,
                   child: Row(
@@ -57,13 +65,13 @@ class CartScreen extends StatelessWidget {
                 ),
             InkWell(
               onTap: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const CheckOutScreen(productbuynowl: [],)));
+                 Get.to(CheckOutScreen(productbuynowl: [],));
               },
               child: Ink(
                 color: Colors.orange,
                 child: Container(
                     alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width * 0.32,
+                    width: screen * 0.32,
                     height: 50,
                     child: const Text('Check Out',
                         style: TextStyle(
@@ -82,9 +90,9 @@ class CartScreen extends StatelessWidget {
           children: [
             GetBuilder<CartController>(
               init: CartController(),
-              builder: (value)=>cartController.items.length.toInt()==0?SizedBox(): Container(
+              builder: (context)=>cartController.items.length.toInt()==0?SizedBox(): Container(
               alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
+              width: screen,
               height: 30,
               color: Colors.white,
               child: Text('ALL (${cartController.items.length})',style: TextStyle(fontSize: 12,color: Colors.red)),
@@ -92,7 +100,7 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 5),
             GetBuilder<CartController>(
               init: CartController(),
-              builder: (value)=>cartController.items.length.toInt()==0? Padding(
+              builder: (context)=>cartController.itemCount.toString() == '0'? Padding(
            padding: const EdgeInsets.only(top: 150),
            child: Center(
             child: Column(
@@ -108,7 +116,7 @@ class CartScreen extends StatelessWidget {
                 children: List.generate(cartController.itemslab.length, (index) =>  Stack(
                   children: [Container(
               padding: const EdgeInsets.all(15),
-              width: MediaQuery.of(context).size.width,
+              width: screen,
              
               color: Colors.white,
               child: Column(
@@ -144,14 +152,14 @@ class CartScreen extends StatelessWidget {
                              const SizedBox(height: 10),
                   GetBuilder<CartController>(
               init: CartController(),
-              builder: (context1)=> Column(
+              builder: (context)=> Column(
               children: List.generate(
                   cartController.items.values.where((element) => element.lab == cartController.itemslab.values.toList()[index].lab).length,
                   (index1) => Stack(
                     children: [
                       Container(
                         padding: EdgeInsets.all(8),
-                        width: MediaQuery.of(context).size.width,
+                        width: screen,
                         color: Colors.white,
                         child: Row(
                           children: [
@@ -167,7 +175,7 @@ class CartScreen extends StatelessWidget {
                               children: [
                                 const SizedBox(height: 3),
                                 Container(
-                                  width:  MediaQuery.of(context).size.width*0.50,
+                                  width:  screen*0.50,
                                   child: Text(names(cartController.items.values.where((element) => element.lab==cartController.itemslab.values.toList()[index].lab).toList().toList(),index1),
                                     style: const TextStyle(fontSize: 12,overflow: TextOverflow.ellipsis),
                                   )
@@ -276,8 +284,6 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-
-
   ////////////////////////////////////////////////////
   Text lab(Lab lab) => Text(
         lab.name.toString(),
@@ -285,10 +291,16 @@ class CartScreen extends StatelessWidget {
       );
 
      String image(List<CartItem >cartItem ,int index)=>  cartItem[index].image;
+
      String names(List<CartItem >cartItem ,int index)=>  cartItem[index].name;
+
      String stock(List<CartItem >cartItem ,int index)=>  cartItem[index].stock;
+
      int qty(List<CartItem >cartItem ,int index)=>  cartItem[index].quantity;
+
      String id(List<CartItem >cartItem ,int index)=>  cartItem[index].id;
+
      String idItem(CartItem cartItem)=>  cartItem.id;
+
      int lap(Lab lab)=>  lab.id!.toInt();
 }

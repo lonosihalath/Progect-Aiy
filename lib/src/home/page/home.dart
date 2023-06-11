@@ -4,10 +4,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/controller/page_controller.dart';
+import 'package:myapp/src/bill/getx/controller.dart';
 import 'package:myapp/src/home/page/home_page.dart';
 import 'package:myapp/src/lap_room/page/lab_room.dart';
 import 'package:myapp/src/notification/page/notification.dart';
 import 'package:myapp/src/profile/page/profile.dart';
+import 'package:myapp/src/transactions/getx/controller.dart';
 
 class HomeMain extends StatefulWidget {
   const HomeMain({Key? key}) : super(key: key);
@@ -19,6 +21,9 @@ class HomeMain extends StatefulWidget {
 class _HomeMainState extends State<HomeMain> {
 
   PageInttroller pageInttroller = Get.put(PageInttroller());
+  BillController billController = Get.put(BillController());
+  TransactionsController transactionsController = Get.put(TransactionsController());
+  
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,10 @@ class _HomeMainState extends State<HomeMain> {
           setState(() {
             pageInttroller.addPageInt(1, index);
           });
+          if(pageInttroller.items.values.toList()[0].page==2){
+            // billController.onInit();
+            transactionsController.onInit();
+          }
         },
         items: [
           BottomNavigationBarItem(
@@ -50,7 +59,23 @@ class _HomeMainState extends State<HomeMain> {
           ),
           BottomNavigationBarItem(
             label: 'Notification',
-            icon:pageInttroller.items.values.toList()[0].page==2? const Icon(Icons.notifications):const Icon(Icons.notifications_none_outlined),
+            icon:GetBuilder<BillController>(
+              init: BillController(),
+              builder: (context)=>Stack(
+              children: [
+                pageInttroller.items.values.toList()[0].page==2? const Icon(Icons.notifications):const Icon(Icons.notifications_none_outlined),
+                billController.statetList.where((p0) => p0.status =='waiting').length.toString()=='0'?SizedBox():
+                Positioned(
+                  right: 0,
+                  child: Container(
+                  alignment: Alignment.center,
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(13),color: Colors.red),
+                  child: Text(billController.statetList.where((p0) => p0.status =='waiting').length.toString(),style: TextStyle(color: Colors.white,fontSize: 9),),
+                ))
+              ],
+            )),
           ),
           BottomNavigationBarItem(
             label: 'Profile',
@@ -58,11 +83,12 @@ class _HomeMainState extends State<HomeMain> {
           ),
         ],
       )),
-      body: GetBuilder<PageInttroller>(
+      body: WillPopScope(child: 
+      GetBuilder<PageInttroller>(
         init: PageInttroller(),
         builder: (context)=>Center(
         child: _widgetOptions.elementAt(pageInttroller.items.values.toList()[0].page),
-      ),)
+      ),), onWillPop: () async => false,)
     );
   }
 

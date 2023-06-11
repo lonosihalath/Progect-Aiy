@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CallApi {
   // final String _url = 'https://bundo-laravel.cslox-th.ruk-com.la/api/';
   final String url = 'http://10.150.246.12:8000/auth/login/';
+  final String urlUpdate = 'http://10.150.246.12:8000/materail_borrow/bills/<id>/status/';
 
 
 
@@ -14,6 +15,14 @@ class CallApi {
     data,
   ) async {
     return await http.post(Uri.parse(url),
+        body: jsonEncode(data), headers: _setHeaders());
+  }
+  ///////////////////////////////////////////
+  postDataUpadte(
+    data,
+    id
+  ) async {
+    return await http.put(Uri.parse(urlUpdate),
         body: jsonEncode(data), headers: _setHeaders());
   }
   ///////////////////////////////////////////

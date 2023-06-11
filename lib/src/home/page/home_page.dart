@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/constants.dart';
 import 'package:myapp/controller/page_controller.dart';
-import 'package:myapp/search/search.dart';
+import 'package:myapp/src/bill/getx/controller.dart';
 import 'package:myapp/src/cart/getx/controller.dart';
 import 'package:myapp/src/cart/page/cart_screen.dart';
 import 'package:myapp/src/lap_room/getx/controller.dart';
 import 'package:myapp/src/lap_room/page/lab_detail.dart';
 import 'package:myapp/src/materail_product/detail/product_detail.dart';
 import 'package:myapp/src/materail_product/getx/controller.dart';
+import 'package:myapp/src/search/search.dart';
 
-ProductController productController = Get.put(ProductController());
-LabController labController = Get.put(LabController());
-PageInttroller pageInttroller = Get.put(PageInttroller());
-CartController cartController = Get.put(CartController());
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,6 +20,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+ProductController productController = Get.put(ProductController());
+LabController labController = Get.put(LabController());
+PageInttroller pageInttroller = Get.put(PageInttroller());
+CartController cartController = Get.put(CartController());
+BillController billController = Get.put(BillController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(

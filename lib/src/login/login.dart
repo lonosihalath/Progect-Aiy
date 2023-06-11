@@ -2,9 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myapp/src/bill/getx/controller.dart';
 import 'package:myapp/src/home/page/home.dart';
+import 'package:myapp/src/lap_room/getx/controller.dart';
 import 'package:myapp/src/login/call_api.dart';
+import 'package:myapp/src/materail_product/getx/controller.dart';
 import 'package:myapp/src/profile/getx/controller.dart';
+import 'package:myapp/src/transactions/getx/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,6 +23,10 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   ProfileController profileController = Get.put(ProfileController());
+  LabController labController = Get.put(LabController());
+BillController billController = Get.put(BillController());
+TransactionsController transactionsController = Get.put(TransactionsController());
+ProductController productController = Get.put(ProductController());
 
   Login() async {
       SharedPreferences sharedPreferences =  await SharedPreferences.getInstance();
@@ -35,6 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
       //print(body['user_id'].toString());
       Navigator.pop(context);
       profileController.onInit();
+      labController.onInit();
+      productController.onInit();
+      billController.onInit();
+      transactionsController.onInit();
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeMain()));
